@@ -1,0 +1,21 @@
+{
+  "name": "wop-api",
+  "version": "1.0.0",
+  "description": "Backend API to provide inforations to Web and Mobile application.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.js"
+  },
+  "keywords": [],
+  "author": "Paulo Franklim - paulofranklim@hotmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "knex": "^0.20.13",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
