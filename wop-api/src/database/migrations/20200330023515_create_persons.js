@@ -1,5 +1,7 @@
+const constants = require("../../utils/Constants")
+
 exports.up = function(knex) {
-    return knex.schema.createTable('persons', function(table){
+    return knex.schema.createTable(constants.TABLE_PERSONS, function(table){
         table.increments();
         table.string('name').notNullable();
         table.string('address').notNullable();
@@ -16,5 +18,5 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTable('persons');
+  return knex.schema.dropTable(constants.TABLE_PERSONS);
 };
