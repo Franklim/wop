@@ -1,7 +1,9 @@
 const express = require('express');
-const GroupController = require('../controllers/GroupController')
 const constants = require('./Constants')
 
+const GroupController = require('../controllers/GroupController')
+const PersonController = require('../controllers/PersonController')
+const UserController = require('../controllers/UserController')
 
 const routes = express.Router();
 
@@ -9,6 +11,16 @@ routes.post(constants.GROUP_POST, GroupController.create);
 routes.put(constants.GROUP_PUT, GroupController.update);
 routes.get(constants.GROUP_GET, GroupController.list);
 routes.delete(constants.GROUP_DELETE, GroupController.delete);
+
+routes.post(constants.PERSON_POST, PersonController.create);
+routes.put(constants.PERSON_PUT, PersonController.update);
+routes.get(constants.PERSON_GET, PersonController.list);
+routes.delete(constants.PERSON_DELETE, PersonController.delete);
+
+routes.post(constants.USER_POST, UserController.create);
+routes.put(constants.USER_PUT, UserController.update);
+routes.get(constants.USER_GET, UserController.list);
+routes.delete(constants.USER_DELETE, UserController.delete);
 
 
 module.exports = routes;
