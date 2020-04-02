@@ -1,23 +1,53 @@
 import React, {useState,useEffect} from 'react'
 import Menu from  '../../components/menu'
-import {Form, Button, Table, Alert} from 'react-bootstrap'
+import {Form, Button, Table, Modal, Alert,OverlayTrigger} from 'react-bootstrap'
 import api from '../../services/api'
 import { FiTrash2, FiEdit } from "react-icons/fi";
 
 function Groups(){
 
-    const [name,setName] = useState('');
     const [groups, setGroups] = useState([]);
     
+    const [name,setName] = useState('');
+    const [permission,setPermission] = useState('');
+    
+    const [tempId, setTempId] = useState('');
+    const [tempName, setTempName] = useState('');
+    const [tempPermission, setTempPermission] = useState('');
+
+    const [showModalInsert, setShowModalInsert] = useState(false);
+    const [showModalEdit, setShowModalEdit] = useState(false);
+    const [showModalDelete, setShowModalDelete] = useState(false);
+            
     useEffect(()=>{
         loadGroups();
     }, [groups])
+
+    function clearFields(){
+        setName('');
+    }    
+    
+    function prepareToEdit(group){
+        setTempId(group.id)
+        setTempName(group.name)
+        setTempPermission(group.permission)
+        setShowModalEdit(true);
+    
+    };
+
+    function prepareToDelete(group){
+        setTempId(group.id)
+        setTempName(group.name)
+        setTempPermission(group.permission)
+        setShowModalDelete(true);
+    
+    };
 
     async function loadGroups(){
         const response = await api.get('groups');
         setGroups(response.data.groups)
     }
-   
+
     async function handleGroups(e){
         e.preventDefault();
         const data = {
@@ -26,59 +56,121 @@ function Groups(){
 
         try {
             const response = await api.post('groups', data);
-            alert("Group inserted. Id: " + response.data.id)
-            
+            setTempName(data.name)
+            setShowModalInsert(true);
             clearFields();
             
-
         } catch (error) {
             alert("Cannot insert a new group. Error:" + error)    
         }
     }
+    async function handleEdit(e){
+        e.preventDefault();
 
-    function clearFields(){
-        setName('');
+        const data = {
+            name:tempName,
+            permissions:tempPermission
+        }
+        await api.put('groups/'+tempId, data)
+        setShowModalEdit(false);        
     }
+    async function handleDelete(e){
+        e.preventDefault()
+        await api.delete('groups/'+tempId);
+        setShowModalDelete(false);    
+    }    
     
-        return(
-            <div>
-                <Menu/>
-                
-                <Form style={{margin:20}} onSubmit={handleGroups}>
-                        <Form.Group>
-                            <Form.Control style={{width:'30%'}} value={name} onChange={e=> setName(e.target.value)} placeholder="Insert the group name" />
-                        </Form.Group>
-                        <Button variant="outline-success" type="submit">Save</Button>
-                        <Button variant="outline-danger" onClick={()=>clearFields()} style={{marginLeft:10}}>Cancel</Button>
-                </Form>
-                
-                <Table style={{marginTop:20}} striped bordered hover variant="dark">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Group</th>
-                            <th>Permission</th>
-                            <th>Actions</th>                        
+    return(
+        <div>
+            <Menu/>
+            
+            <Form style={{margin:20, width:'25%'}} onSubmit={handleGroups}>
+                    <Form.Group style={{marginTop:20}}>
+                        <Form.Label>Group Name</Form.Label>
+                        <Form.Control required value={name} onChange={e=> setName(e.target.value)} placeholder="Insert the group name" />
+                        <Form.Label>Permissions</Form.Label>
+                        <Form.Control disabled value={permission} onChange={e=> setPermission(e.target.value)} placeholder="Insert the permissions - TEMPORARY DISABLED" />
+                    </Form.Group>
+                    
+                    <Button style={{width:'80px'}}  variant="outline-success" type="submit">Save</Button>
+                    <Button style={{width:'80px', marginLeft:10}}  variant="outline-danger" onClick={()=>clearFields()} >Cancel</Button>
+            </Form>
+            
+            <Table style={{margin:20, width:'50%'}}  striped bordered hover size="sm">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Group</th>
+                        <th>Permission</th>
+                        <th>Actions</th>                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {groups.map(group=> (
+                        <tr key={group.id}>
+                            <th id="id" scope="row">{group.id}</th>
+                            <td style={{width:'20%'}} id="name">{group.name}</td>
+                            <td id="permissions">{group.permissions}</td>
+                            <td style={{width:'15%'}}>
+                                <button className="btn btn-light btn-sm" onClick={() => {prepareToEdit(group)}} style={{ marginRight: "10px" }}><FiEdit/></button>
+                                <button className="btn btn-danger btn-sm" onClick={() => {prepareToDelete(group)} }> <FiTrash2/> </button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {groups.map(group=> (
-                            <tr key={group.id}>
-                                <th id="id" scope="row">{group.id}</th>
-                                <td id="name">{group.name}</td>
-                                <td id="permissions">{group.permissions}</td>
-                                <td>
-                                    <button className="btn btn-light btn-sm" onClick={() => { if (window.confirm('Deseja editar o grupo "' + group.name + '"?')) alert("Edit") }} style={{ marginRight: "10px" }}><FiEdit/></button>
-                                    <button className="btn btn-danger btn-sm" onClick={() => { if (window.confirm('Deseja realmente deletar o grupo "' + group.name + '"?')) alert("Delete") }}> <FiTrash2/> </button>
-                                </td>
-                            </tr>
-                            )
-                        )}
-                    </tbody>
-                </Table>                
-                                   
-            </div>
-        );        
+                        )
+                    )}
+                </tbody>
+            </Table>       
+
+            <Modal show={showModalEdit} onHide={()=>setShowModalEdit(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Group</Modal.Title>
+                </Modal.Header>
+                <Modal.Body >
+                    <Form.Label>Group</Form.Label>
+                    <Form.Control  value={tempName} onChange={e=> setTempName(e.target.value)}  />
+
+                    <Form.Label style={{marginTop:20}}>Permissions</Form.Label>
+                    <Form.Control disabled  value={tempPermission} onChange={e=> setTempPermission(e.target.value)}  />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={handleEdit}>
+                        Save Changes
+                    </Button>
+                    <Button variant="secondary" onClick={()=> setShowModalEdit(false)}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showModalDelete} onHide={()=>setShowModalDelete(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete Group</Modal.Title>
+                </Modal.Header>
+                    <Modal.Body>Confirm delete group "{tempName}"?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={handleDelete}>
+                        Delete
+                    </Button>
+                    <Button variant="secondary" onClick={()=>setShowModalDelete(false)}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>      
+
+            <Modal show={showModalInsert} onHide={()=>setShowModalInsert(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Insert Group</Modal.Title>
+                </Modal.Header>
+                    <Modal.Body>Group "{tempName}" inserted.</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={()=>setShowModalInsert(false)}>
+                        Ok
+                    </Button>
+                </Modal.Footer>
+            </Modal>            
+                                           
+        </div>
+    );        
 }
 
 export default Groups;
