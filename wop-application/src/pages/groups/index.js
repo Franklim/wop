@@ -1,6 +1,6 @@
 import React, {useState,useEffect} from 'react'
 import Menu from  '../../components/menu'
-import {Form, Button, Table, Modal, Alert,OverlayTrigger} from 'react-bootstrap'
+import {Form, Button, Table, Modal, Pagination} from 'react-bootstrap'
 import api from '../../services/api'
 import { FiTrash2, FiEdit } from "react-icons/fi";
 
@@ -11,6 +11,8 @@ function Groups(){
     const [name,setName] = useState('');
     const [permission,setPermission] = useState('');
     
+    const [actualize, setActualize] = useState(false)
+
     const [tempId, setTempId] = useState('');
     const [tempName, setTempName] = useState('');
     const [tempPermission, setTempPermission] = useState('');
@@ -18,10 +20,13 @@ function Groups(){
     const [showModalInsert, setShowModalInsert] = useState(false);
     const [showModalEdit, setShowModalEdit] = useState(false);
     const [showModalDelete, setShowModalDelete] = useState(false);
-            
+
+    const [pages, setPages] = useState([])
+    const [activePage, setActivePage] = useState(1)
+    
     useEffect(()=>{
         loadGroups();
-    }, [groups])
+    }, [actualize])
 
     function clearFields(){
         setName('');
@@ -43,9 +48,22 @@ function Groups(){
     
     };
 
+    function handleFilter(e){
+        setActivePage(e.target.text)
+        setActualize(!actualize);
+        
+    };
+
     async function loadGroups(){
         const response = await api.get('groups');
         setGroups(response.data.groups)
+        
+        let tempPages = []
+        for(let i = response.data.groups.length; i > 0; i = i-5 ){
+            tempPages.push(<Pagination.Item key={tempPages.length} active={tempPages.length+1 == activePage}>{tempPages.length+1}</Pagination.Item>)
+        }
+        setPages(tempPages)
+                
     }
 
     async function handleGroups(e){
@@ -55,10 +73,11 @@ function Groups(){
         }
 
         try {
-            const response = await api.post('groups', data);
+            await api.post('groups', data);
             setTempName(data.name)
             setShowModalInsert(true);
             clearFields();
+            setActualize(!actualize);
             
         } catch (error) {
             alert("Cannot insert a new group. Error:" + error)    
@@ -72,11 +91,13 @@ function Groups(){
             permissions:tempPermission
         }
         await api.put('groups/'+tempId, data)
+        setActualize(!actualize);
         setShowModalEdit(false);        
     }
     async function handleDelete(e){
         e.preventDefault()
         await api.delete('groups/'+tempId);
+        setActualize(!actualize);
         setShowModalDelete(false);    
     }    
     
@@ -95,8 +116,11 @@ function Groups(){
                     <Button style={{width:'80px'}}  variant="outline-success" type="submit">Save</Button>
                     <Button style={{width:'80px', marginLeft:10}}  variant="outline-danger" onClick={()=>clearFields()} >Cancel</Button>
             </Form>
-            
-            <Table style={{margin:20, width:'50%'}}  striped bordered hover size="sm">
+           
+            <Pagination onClick={handleFilter} style={{marginBottom:0, marginLeft:'25%'}} size="sm" >
+                {pages}
+            </Pagination>
+            <Table style={{marginLeft:20, width:'50%'}}  striped bordered hover size="sm">
                 <thead>
                     <tr>
                         <th>Id</th>
@@ -105,22 +129,24 @@ function Groups(){
                         <th>Actions</th>                        
                     </tr>
                 </thead>
-                <tbody>
-                    {groups.map(group=> (
-                        <tr key={group.id}>
-                            <th id="id" scope="row">{group.id}</th>
-                            <td style={{width:'20%'}} id="name">{group.name}</td>
-                            <td id="permissions">{group.permissions}</td>
-                            <td style={{width:'15%'}}>
-                                <button className="btn btn-light btn-sm" onClick={() => {prepareToEdit(group)}} style={{ marginRight: "10px" }}><FiEdit/></button>
-                                <button className="btn btn-danger btn-sm" onClick={() => {prepareToDelete(group)} }> <FiTrash2/> </button>
-                            </td>
-                        </tr>
-                        )
-                    )}
-                </tbody>
-            </Table>       
-
+ 
+                    <tbody>
+                        {groups.map(group=> (
+                            <tr key={group.id}>
+                                <th id="id" scope="row">{group.id}</th>
+                                <td style={{width:'20%'}} id="name">{group.name}</td>
+                                <td id="permissions">{group.permissions}</td>
+                                <td style={{width:'15%'}}>
+                                    <button className="btn btn-light btn-sm" onClick={() => {prepareToEdit(group)}} style={{ marginRight: "10px" }}><FiEdit/></button>
+                                    <button className="btn btn-danger btn-sm" onClick={() => {prepareToDelete(group)} }> <FiTrash2/> </button>
+                                </td>
+                            </tr>
+                            )
+                        )}
+                    </tbody>
+                
+            </Table>
+            
             <Modal show={showModalEdit} onHide={()=>setShowModalEdit(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Edit Group</Modal.Title>
