@@ -44,14 +44,15 @@ function Groups(){
         setTempId(group.id)
         setTempName(group.name)
         setTempPermission(group.permission)
-        setShowModalDelete(true);
-    
+        setShowModalDelete(true);           
     };
 
-    function handleFilter(e){
-        setActivePage(e.target.text)
-        setActualize(!actualize);
-        
+    function handleFilter(e) {
+        const num = e.target.text
+        if(num){
+            setActivePage(num)            
+            setActualize(!actualize);        
+        }        
     };
 
     async function loadGroups(){
@@ -131,10 +132,10 @@ function Groups(){
                 </thead>
  
                     <tbody>
-                        {groups.map(group=> (
+                        {groups.slice((activePage * 5) - 5, 5*activePage).map(group=> (
                             <tr key={group.id}>
-                                <th id="id" scope="row">{group.id}</th>
-                                <td style={{width:'20%'}} id="name">{group.name}</td>
+                                <th style={{width:'5%'}} id="id" scope="row">{group.id}</th>
+                                <td style={{width:'25%'}} id="name">{group.name}</td>
                                 <td id="permissions">{group.permissions}</td>
                                 <td style={{width:'15%'}}>
                                     <button className="btn btn-light btn-sm" onClick={() => {prepareToEdit(group)}} style={{ marginRight: "10px" }}><FiEdit/></button>
