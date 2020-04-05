@@ -110,7 +110,7 @@ function Groups(){
                     <Form.Group style={{marginTop:20}}>
                         <Form.Label>Group Name</Form.Label>
                         <Form.Control required value={name} onChange={e=> setName(e.target.value)} placeholder="Insert the group name" />
-                        <Form.Label>Permissions</Form.Label>
+                        <Form.Label style={{marginTop:20}}>Permissions</Form.Label>
                         <Form.Control disabled value={permission} onChange={e=> setPermission(e.target.value)} placeholder="Insert the permissions - TEMPORARY DISABLED" />
                     </Form.Group>
                     

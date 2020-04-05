@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom'
 import{Navbar,Nav,NavDropdown,Form, FormText} from 'react-bootstrap'
 import { DiReact, DiNodejsSmall, DiMysql, DiGithubBadge, DiBootstrap } from "react-icons/di";
 import { FaHome } from "react-icons/fa";
@@ -12,8 +13,9 @@ function Menu(){
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
                 <NavDropdown title="REGISTER" id="basic-nav-dropdown">
-                    <NavDropdown.Item href="/groups">Groups</NavDropdown.Item>
-                    <NavDropdown.Item href="/groups">Persons</NavDropdown.Item>
+                    <NavDropdown.Item href="/groups"> Groups </NavDropdown.Item>
+                    <NavDropdown.Item href="/persons">Persons</NavDropdown.Item>
+                    <NavDropdown.Item href="/users">Users</NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown title="OPERATION" id="basic-nav-dropdown">
                     <NavDropdown.Item href="#">New</NavDropdown.Item>
