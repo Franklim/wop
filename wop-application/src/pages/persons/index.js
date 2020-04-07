@@ -1,10 +1,15 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Menu from '../../components/menu'
-import {Col,Form, Button} from 'react-bootstrap'
+import {Col,Form, Button, Table} from 'react-bootstrap'
+import {FiEdit,FiTrash2} from 'react-icons/fi'
 import api from '../../services/api'
 const constants = require('../../utils/StatesNames')
 
 function Persons(){
+
+    useEffect(()=>{
+        handleLoad()
+    },[])
 
     const [name, setName] = useState("") 
     const [address, setAddress] = useState("") 
@@ -17,6 +22,8 @@ function Persons(){
     const [mail, setMail] = useState("") 
     const [phone, setPhone] = useState("") 
     const [whatsapp, setWhatsapp] = useState("") 
+
+    const [persons, setPersons] = useState([])
 
     function clearFields(){
         setName("")
@@ -51,7 +58,13 @@ function Persons(){
         const response = await api.post('persons', data)
         clearFields();
     }
-    console.log(constants.STATES)
+
+    async function handleLoad(){
+        const response = await api.get('persons');
+        setPersons(response.data.persons)
+        
+    }
+    
     return(
         <div>
         <Menu/>
@@ -122,6 +135,47 @@ function Persons(){
             <Button style={{width:'80px'}}  variant="outline-success" type="submit">Save</Button>
             <Button style={{width:'80px', marginLeft:10}}  variant="outline-danger" onClick={()=>clearFields()} >Cancel</Button>
         </Form>
+        
+        <Table striped bordered hover size="sm">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>E-mail</th>
+                <th>City</th>
+                <th>Phone</th>
+                <th>Whatsapp</th>
+                <th>Address</th>
+                <th>Number</th>
+                <th>Distric</th>
+                <th>Complement</th>                        
+                <th>Actions</th>                        
+            </tr>
+        </thead>
+
+            <tbody>
+                {persons.map(person=> (
+                    <tr key={person.id}>
+                        <th style={{width:'5%'}}  scope="row">{person.id}</th>
+                        <td>{person.name}</td>
+                        <td>{person.mail}</td>
+                        <td>{person.city}</td>
+                        <td>{person.phone}</td>
+                        <td>{person.whatsapp}</td>
+                        <td>{person.address}</td>
+                        <td>{person.number}</td>
+                        <td>{person.district}</td>
+                        <td>{person.complement}</td>
+                        <td>
+                            <button className="btn btn-light btn-sm" onClick={() => {}} style={{ marginRight: "10px" }}><FiEdit/></button>
+                            <button className="btn btn-danger btn-sm" onClick={() => {} }> <FiTrash2/> </button>
+                        </td>
+                    </tr>
+                    )
+                )}
+            </tbody>
+
+        </Table>
         </div>
     );
 }
