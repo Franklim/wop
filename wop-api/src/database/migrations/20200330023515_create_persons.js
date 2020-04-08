@@ -4,6 +4,7 @@ exports.up = function(knex) {
     return knex.schema.createTable(constants.TABLE_PERSONS, function(table){
         table.increments();
         table.string('name').notNullable();
+        table.string('document').notNullable();
         table.string('address').notNullable();
         table.string('number').notNullable();
         table.string('district').notNullable();

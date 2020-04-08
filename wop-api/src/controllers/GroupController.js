@@ -46,6 +46,26 @@ module.exports ={
             }           
 
         },
+        async paginatedList(request, response){
+            const [count] = await connection(constants.TABLE_GROUPS).count();
+            response.header('X-Total-Count', count['count(*)'])
+        
+            const {page = 1} = request.query;
+        
+            try{
+                const groups = await connection(constants.TABLE_GROUPS)
+                .limit(5)
+                .offset((page - 1) * 5)
+                .select("*");
+                return response.json({groups})
+            }catch (error) {
+                return response.status(400).json({
+                    message: 'Cannot load all groups.',
+                    error
+                })    
+            }           
+
+        },
         async delete(request, response){
             const {id} = request.params;
         

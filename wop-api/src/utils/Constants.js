@@ -1,12 +1,5 @@
 module.exports = Object.freeze({
-
-    CRIADO:"CRIADO",
-    PENDENTE:"PENDENTE",
-    APROVADO:"APROVADO",
-    ENTREGADO:"ENTREGADO",
-    CANCELADO:"CANCELADO",
-    BLOQUEADO:"BLOQUEADO",
-
+    
     TABLE_GROUPS:        'groups',
     TABLE_ORDERS_STATES: 'orders_states',
     TABLE_PERSONS:       'persons',
@@ -27,6 +20,5 @@ module.exports = Object.freeze({
     USER_PUT:      "/users/:id",
     USER_GET:      "/users",
     USER_DELETE:   "/users/:id",
-
 
 });

@@ -55,6 +55,27 @@ module.exports ={
             }           
 
         },
+        async paginatedList(request, response){
+            const [count] = await connection(constants.TABLE_PERSONS).count();
+            response.header('X-Total-Count', count['count(*)'])
+        
+            const {page = 1} = request.query;
+        
+            try{
+                const persons = await connection(constants.TABLE_PERSONS)
+                .limit(5)
+                .offset((page - 1) * 5)
+                .select("*");
+                
+                return response.json({persons})
+            }catch (error) {
+                return response.status(400).json({
+                    message: 'Cannot load all persons.',
+                    error
+                })    
+            }           
+
+        },
         async delete(request, response){
             const {id} = request.params;
         
