@@ -7,6 +7,7 @@ const constants = require('../../utils/StatesNames')
 
 function Persons(){
 
+    const [id,setId]=useState(0)
     const [name, setName] = useState("") 
     const [document, setDocument] = useState("") 
     const [address, setAddress] = useState("") 
@@ -48,7 +49,9 @@ function Persons(){
     },[actualize])
 
     function clearFields(){
+        setId("")
         setName("")
+        setDocument("")
         setAddress("")
         setNumber("")
         setDistrict("")
@@ -79,7 +82,14 @@ function Persons(){
         }
 
         try {
-            await api.post('persons', data)
+            console.log("id " + id)
+            console.log(data)
+            if(!id > 0){
+                await api.post('persons', data)
+            }else{
+                await api.put('persons/'+ id, data)
+            }
+            
             setTempName(data.name)
             setShowModalInsert(true);
             clearFields();
@@ -89,19 +99,11 @@ function Persons(){
         }        
         
     }
-    async function handleEdit(e){
-        e.preventDefault();
-
-        const data = {
-            name:tempName
-        }
-        await api.put('persons/'+tempId, data)
-        setActualize(!actualize);
-        
-    }
+    
     async function handleDelete(e){
         e.preventDefault()
         await api.delete('persons/'+tempId);
+        clearFields();
         setActualize(!actualize);
         setShowModalDelete(false);    
     }
@@ -118,10 +120,26 @@ function Persons(){
         if(num){
             setActivePage(num)   
             setActualize(!actualize);                             
-            
         }   
         
     };
+
+    function handleEditClick(person){
+        setId(person.id)
+        setName(person.name)
+        setDocument(person.document)
+        setAddress(person.address)
+        setNumber(person.number)
+        setDistrict(person.district)
+        setCity(person.city)
+        setZipcode(person.zipcode)
+        setComplement(person.complement)
+        setMail(person.mail)
+        setPhone(person.phone)
+        setWhatsapp(person.whatsapp)
+        setState(person.state)
+        
+    }
 
     
     return(
@@ -135,7 +153,7 @@ function Persons(){
                 </Form.Group>                
                 <Form.Group as={Col} md="2">
                     <Form.Label>Document</Form.Label>
-                    <Form.Control disabled placeholder="AVALIABLE SOON" />
+                    <Form.Control required value={document} onChange={e=> setDocument(e.target.value)} placeholder="Insert person document" />
                 </Form.Group>                
             </Form.Row>
                        
@@ -204,6 +222,7 @@ function Persons(){
             <tr>
                 <th>Id</th>
                 <th>Name</th>
+                <th>Document</th>
                 <th>E-mail</th>
                 <th>City</th>
                 <th>Phone</th>
@@ -218,9 +237,10 @@ function Persons(){
 
             <tbody>
                 {persons.map(person=> (
-                    <tr key={person.id}>
+                    <tr onMouseUpCapture={()=> handleEditClick(person)} key={person.id}>
                         <th style={{width:'5%'}}  scope="row">{person.id}</th>
                         <td>{person.name}</td>
+                        <td>{person.document}</td>
                         <td>{person.mail}</td>
                         <td>{person.city}</td>
                         <td>{person.phone}</td>
