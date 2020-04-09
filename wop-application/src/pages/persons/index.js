@@ -15,6 +15,7 @@ function Persons(){
     const [district, setDistrict] = useState("") 
     const [city, setCity] = useState("") 
     const [state, setState] = useState([]) 
+    const [country, setCountry] = useState("") 
     const [zipcode, setZipcode] = useState("") 
     const [complement, setComplement] = useState("") 
     const [mail, setMail] = useState("") 
@@ -56,6 +57,7 @@ function Persons(){
         setNumber("")
         setDistrict("")
         setCity("")
+        setCountry("")
         setZipcode("")
         setComplement("")
         setMail("")
@@ -74,6 +76,7 @@ function Persons(){
             district,
             city,
             state,
+            country,
             zipcode,
             complement,
             mail,
@@ -82,8 +85,6 @@ function Persons(){
         }
 
         try {
-            console.log("id " + id)
-            console.log(data)
             if(!id > 0){
                 await api.post('persons', data)
             }else{
@@ -102,10 +103,14 @@ function Persons(){
     
     async function handleDelete(e){
         e.preventDefault()
-        await api.delete('persons/'+tempId);
-        clearFields();
-        setActualize(!actualize);
-        setShowModalDelete(false);    
+        try {
+            await api.delete('persons/'+tempId);
+            clearFields();
+            setActualize(!actualize);
+            setShowModalDelete(false);       
+        } catch (error) {
+            alert("Cannot delete te person. Error: "+error)
+        }        
     }
     
     function prepareToDelete(person){
@@ -138,6 +143,7 @@ function Persons(){
         setPhone(person.phone)
         setWhatsapp(person.whatsapp)
         setState(person.state)
+        setCountry(person.country)
         
     }
 
@@ -150,18 +156,18 @@ function Persons(){
                 <Form.Group as={Col} md="3">
                     <Form.Label>Name</Form.Label>
                     <Form.Control required value={name} onChange={e=> setName(e.target.value)} placeholder="Insert person name" />
-                </Form.Group>                
+                </Form.Group>  
+                <Form.Group as={Col} md="3">
+                    <Form.Label>E-mail</Form.Label>
+                    <Form.Control required value={mail} onChange={e=> setMail(e.target.value)} placeholder="Insert mail" />
+                </Form.Group>                              
+            </Form.Row>
+                       
+            <Form.Row >
                 <Form.Group as={Col} md="2">
                     <Form.Label>Document</Form.Label>
                     <Form.Control required value={document} onChange={e=> setDocument(e.target.value)} placeholder="Insert person document" />
                 </Form.Group>                
-            </Form.Row>
-                       
-            <Form.Row >
-                <Form.Group as={Col} md="3">
-                    <Form.Label>E-mail</Form.Label>
-                    <Form.Control required value={mail} onChange={e=> setMail(e.target.value)} placeholder="Insert mail" />
-                </Form.Group>
                 <Form.Group as={Col} md="2">
                     <Form.Label>Phone</Form.Label>
                     <Form.Control value={phone} onChange={e=> setPhone(e.target.value)} placeholder="Insert phone number" />
@@ -200,10 +206,16 @@ function Persons(){
                     </Form.Control>
                 </Form.Group>
                 <Form.Group as={Col} md="2">
+                    <Form.Label>Country</Form.Label>
+                    <Form.Control value={country} onChange={e=> setCountry(e.target.value)} placeholder="Insert country" />
+                </Form.Group>                
+            </Form.Row>
+            <Form.Row>
+            <Form.Group as={Col} md="2">
                     <Form.Label>Zipcode</Form.Label>
                     <Form.Control required value={zipcode} onChange={e=> setZipcode(e.target.value)} placeholder="Insert zipcode" />
-                </Form.Group>
-                <Form.Group as={Col} md="3">
+                </Form.Group>                
+                <Form.Group as={Col} md="4">
                     <Form.Label>Complement</Form.Label>
                     <Form.Control value={complement} onChange={e=> setComplement(e.target.value)} placeholder="Address complemnt" />
                 </Form.Group>
@@ -217,7 +229,7 @@ function Persons(){
                 {pages}
          </Pagination>
 
-        <Table striped bordered hover size="sm">
+        <Table style={{marginLeft:20, width:'50%'}}striped bordered hover size="sm">
         <thead>
             <tr>
                 <th>Id</th>
@@ -225,12 +237,7 @@ function Persons(){
                 <th>Document</th>
                 <th>E-mail</th>
                 <th>City</th>
-                <th>Phone</th>
-                <th>Whatsapp</th>
-                <th>Address</th>
-                <th>Number</th>
-                <th>Distric</th>
-                <th>Complement</th>                        
+                <th>Whatsapp</th>               
                 <th>Actions</th>                        
             </tr>
         </thead>
@@ -243,12 +250,7 @@ function Persons(){
                         <td>{person.document}</td>
                         <td>{person.mail}</td>
                         <td>{person.city}</td>
-                        <td>{person.phone}</td>
-                        <td>{person.whatsapp}</td>
-                        <td>{person.address}</td>
-                        <td>{person.number}</td>
-                        <td>{person.district}</td>
-                        <td>{person.complement}</td>
+                        <td>{person.whatsapp}</td>                        
                         <td><button className="btn btn-danger btn-sm" onClick={() => {prepareToDelete(person)} }> <FiTrash2/> </button></td>
                     </tr>
                     )

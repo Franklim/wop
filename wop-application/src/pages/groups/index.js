@@ -2,23 +2,22 @@ import React, {useState,useEffect} from 'react'
 import Menu from  '../../components/menu'
 import {Form, Button, Table, Modal, Pagination} from 'react-bootstrap'
 import api from '../../services/api'
-import { FiTrash2, FiEdit } from "react-icons/fi";
+import { FiTrash2 } from "react-icons/fi";
 
 function Groups(){
 
     const [groups, setGroups] = useState([]);
     
+    const [id,setId]=useState(0)
     const [name,setName] = useState('');
     const [permission,setPermission] = useState('');
     
-    const [actualize, setActualize] = useState(false)
-
     const [tempId, setTempId] = useState('');
     const [tempName, setTempName] = useState('');
-    const [tempPermission, setTempPermission] = useState('');
+    
+    const [actualize, setActualize] = useState(false)
 
     const [showModalInsert, setShowModalInsert] = useState(false);
-    const [showModalEdit, setShowModalEdit] = useState(false);
     const [showModalDelete, setShowModalDelete] = useState(false);
 
     const [pages, setPages] = useState([])
@@ -40,21 +39,14 @@ function Groups(){
     }, [actualize])
       
     function clearFields(){
-        setName('');
+        setId("")
+        setName("");
+        setPermission("")
     }    
     
-    function prepareToEdit(group){
-        setTempId(group.id)
-        setTempName(group.name)
-        setTempPermission(group.permission)
-        setShowModalEdit(true);
-    
-    };
-
     function prepareToDelete(group){
         setTempId(group.id)
-        setTempName(group.name)
-        setTempPermission(group.permission)
+        setTempName(group.name)        
         setShowModalDelete(true);           
     };
 
@@ -73,9 +65,12 @@ function Groups(){
         const data = {
             name
         }
-
         try {
-            await api.post('groups', data);
+            if(!id>0){
+                await api.post('groups', data);
+            }else{
+                await api.put('groups/'+id, data)
+            }            
             setTempName(data.name)
             setShowModalInsert(true);
             clearFields();
@@ -85,22 +80,21 @@ function Groups(){
             alert("Cannot insert a new group. Error:" + error)    
         }
     }
-    async function handleEdit(e){
-        e.preventDefault();
-
-        const data = {
-            name:tempName,
-            permissions:tempPermission
-        }
-        await api.put('groups/'+tempId, data)
-        setActualize(!actualize);
-        setShowModalEdit(false);        
+    function handleEditClick(group){
+        setId(group.id)
+        setName(group.name);
+        setPermission(group.permission)
     }
     async function handleDelete(e){
         e.preventDefault()
-        await api.delete('groups/'+tempId);
-        setActualize(!actualize);
-        setShowModalDelete(false);    
+        try {
+            await api.delete('groups/'+tempId);
+            setActualize(!actualize);
+            clearFields()
+            setShowModalDelete(false);
+        } catch (error) {
+            alert("Cannot delete group. Error " + error)
+        }
     }         
     
     return(
@@ -134,12 +128,11 @@ function Groups(){
  
                     <tbody>
                         {groups.map(group=> (
-                            <tr key={group.id}>
+                            <tr onMouseUpCapture={()=>handleEditClick(group)} key={group.id}>
                                 <th style={{width:'5%'}} id="id" scope="row">{group.id}</th>
                                 <td style={{width:'25%'}} id="name">{group.name}</td>
                                 <td id="permissions">{group.permissions}</td>
                                 <td style={{width:'15%'}}>
-                                    <button className="btn btn-light btn-sm" onClick={() => {prepareToEdit(group)}} style={{ marginRight: "10px" }}><FiEdit/></button>
                                     <button className="btn btn-danger btn-sm" onClick={() => {prepareToDelete(group)} }> <FiTrash2/> </button>
                                 </td>
                             </tr>
@@ -148,28 +141,7 @@ function Groups(){
                     </tbody>
                 
             </Table>
-            
-            <Modal show={showModalEdit} onHide={()=>setShowModalEdit(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Edit Group</Modal.Title>
-                </Modal.Header>
-                <Modal.Body >
-                    <Form.Label>Group</Form.Label>
-                    <Form.Control  value={tempName} onChange={e=> setTempName(e.target.value)}  />
-
-                    <Form.Label style={{marginTop:20}}>Permissions</Form.Label>
-                    <Form.Control disabled  value={tempPermission} onChange={e=> setTempPermission(e.target.value)}  />
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="primary" onClick={handleEdit}>
-                        Save Changes
-                    </Button>
-                    <Button variant="secondary" onClick={()=> setShowModalEdit(false)}>
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
+                        
             <Modal show={showModalDelete} onHide={()=>setShowModalDelete(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Delete Group</Modal.Title>

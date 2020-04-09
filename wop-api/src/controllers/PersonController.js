@@ -4,7 +4,7 @@ const constants = require("../utils/Constants")
 module.exports ={
     
        async create(request, response){
-            const {name,document,address,number,district,city,state,zipcode,complement,mail,phone,whatsapp} = request.body;
+            const {name,document,address,number,district,city,state,country,zipcode,complement,mail,phone,whatsapp} = request.body;
 
             try {
                 const [id] = await connection(constants.TABLE_PERSONS).insert({
@@ -15,6 +15,7 @@ module.exports ={
                     district,
                     city,
                     state,
+					country,
                     zipcode,
                     complement,
                     mail,

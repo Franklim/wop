@@ -10,6 +10,7 @@ exports.up = function(knex) {
         table.string('district').notNullable();
         table.string('city').notNullable();
         table.string('state').notNullable();
+		table.string('country').notNullable();
         table.string('zipcode').notNullable();
         table.string('complement');
         table.string('mail').notNullable();
