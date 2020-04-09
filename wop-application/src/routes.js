@@ -11,9 +11,9 @@ function Routes(){
         <BrowserRouter>
             <Switch>
                 <Route path="/" exact component= {Home} />
-                <Route path="/groups" exact component= {Groups} />
-                <Route path="/persons" exact component= {Persons} />
-                <Route path="/users" exact component= {Users} />
+                <Route path="/groups" component= {Groups} />
+                <Route path="/persons" component= {Persons} />
+                
                 
             </Switch>
         </BrowserRouter>

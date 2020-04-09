@@ -19,7 +19,7 @@ routes.delete(constants.PERSON_DELETE, PersonController.delete);
 
 routes.post(constants.USER_POST, UserController.create);
 routes.put(constants.USER_PUT, UserController.update);
-routes.get(constants.USER_GET, UserController.list);
+routes.get(constants.USER_GET, UserController.paginatedList);
 routes.delete(constants.USER_DELETE, UserController.delete);
 
 

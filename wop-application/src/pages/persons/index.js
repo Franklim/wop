@@ -1,17 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import Menu from '../../components/menu'
-import {Col,Form, Button, Table} from 'react-bootstrap'
-import {FiEdit,FiTrash2} from 'react-icons/fi'
+import {Col,Form, Button, Table,Pagination,Modal} from 'react-bootstrap'
+import {FiTrash2} from 'react-icons/fi'
 import api from '../../services/api'
 const constants = require('../../utils/StatesNames')
 
 function Persons(){
 
-    useEffect(()=>{
-        handleLoad()
-    },[])
-
     const [name, setName] = useState("") 
+    const [document, setDocument] = useState("") 
     const [address, setAddress] = useState("") 
     const [number, setNumber] = useState("") 
     const [district, setDistrict] = useState("") 
@@ -23,7 +20,32 @@ function Persons(){
     const [phone, setPhone] = useState("") 
     const [whatsapp, setWhatsapp] = useState("") 
 
+    const [tempId, setTempId] = useState("") 
+    const [tempName, setTempName] = useState("") 
+    
     const [persons, setPersons] = useState([])
+
+    const [showModalInsert, setShowModalInsert] = useState(false);
+    const [showModalDelete, setShowModalDelete] = useState(false);
+
+    const [activePage,setActivePage] = useState(1)
+    const [pages,setPages] = useState([])
+    const [actualize,setActualize] = useState(true)
+
+    useEffect(()=>{
+        api.get('persons?page='+activePage).then(response =>{
+            setPersons(response.data.persons)
+            const total = response.headers['x-total-count'];
+            
+            let tempPages = []
+            for(let i = total; i > 0; i = i-5 ){
+                tempPages.push(<Pagination.Item key={tempPages.length} active={tempPages.length+1 == activePage}>{tempPages.length+1}</Pagination.Item>)
+            }
+            setPages(tempPages)
+        
+        });
+        
+    },[actualize])
 
     function clearFields(){
         setName("")
@@ -43,6 +65,7 @@ function Persons(){
         e.preventDefault()
         const data = {
             name,
+            document,
             address,
             number,
             district,
@@ -55,15 +78,51 @@ function Persons(){
             whatsapp
         }
 
-        const response = await api.post('persons', data)
-        clearFields();
-    }
-
-    async function handleLoad(){
-        const response = await api.get('persons');
-        setPersons(response.data.persons)
+        try {
+            await api.post('persons', data)
+            setTempName(data.name)
+            setShowModalInsert(true);
+            clearFields();
+            setActualize(!actualize);
+        } catch (error) {
+            alert("Cannot insert a new person. Error:" + error)       
+        }        
         
     }
+    async function handleEdit(e){
+        e.preventDefault();
+
+        const data = {
+            name:tempName
+        }
+        await api.put('persons/'+tempId, data)
+        setActualize(!actualize);
+        
+    }
+    async function handleDelete(e){
+        e.preventDefault()
+        await api.delete('persons/'+tempId);
+        setActualize(!actualize);
+        setShowModalDelete(false);    
+    }
+    
+    function prepareToDelete(person){
+        setTempId(person.id)
+        setTempName(person.name)
+        setShowModalDelete(true);           
+    };
+
+
+    function handleFilter(e) {
+        const num = e.target.text
+        if(num){
+            setActivePage(num)   
+            setActualize(!actualize);                             
+            
+        }   
+        
+    };
+
     
     return(
         <div>
@@ -135,7 +194,11 @@ function Persons(){
             <Button style={{width:'80px'}}  variant="outline-success" type="submit">Save</Button>
             <Button style={{width:'80px', marginLeft:10}}  variant="outline-danger" onClick={()=>clearFields()} >Cancel</Button>
         </Form>
-        
+
+        <Pagination onClick={handleFilter} style={{marginBottom:0, marginLeft:'25%'}} size="sm" >
+                {pages}
+         </Pagination>
+
         <Table striped bordered hover size="sm">
         <thead>
             <tr>
@@ -166,16 +229,40 @@ function Persons(){
                         <td>{person.number}</td>
                         <td>{person.district}</td>
                         <td>{person.complement}</td>
-                        <td>
-                            <button className="btn btn-light btn-sm" onClick={() => {}} style={{ marginRight: "10px" }}><FiEdit/></button>
-                            <button className="btn btn-danger btn-sm" onClick={() => {} }> <FiTrash2/> </button>
-                        </td>
+                        <td><button className="btn btn-danger btn-sm" onClick={() => {prepareToDelete(person)} }> <FiTrash2/> </button></td>
                     </tr>
                     )
                 )}
             </tbody>
 
         </Table>
+        
+        <Modal show={showModalDelete} onHide={()=>setShowModalDelete(false)}>
+            <Modal.Header closeButton>
+                <Modal.Title>Delete Person</Modal.Title>
+            </Modal.Header>
+                <Modal.Body>Confirm delete person "{tempName}"?</Modal.Body>
+            <Modal.Footer>
+                <Button variant="danger" onClick={handleDelete}>
+                    Delete
+                </Button>
+                <Button variant="secondary" onClick={()=>setShowModalDelete(false)}>
+                    Close
+                </Button>
+            </Modal.Footer>
+        </Modal>      
+
+        <Modal show={showModalInsert} onHide={()=>setShowModalInsert(false)}>
+            <Modal.Header closeButton>
+                <Modal.Title>Insert Person</Modal.Title>
+            </Modal.Header>
+                <Modal.Body>Person "{tempName}" inserted.</Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={()=>setShowModalInsert(false)}>
+                    Ok
+                </Button>
+            </Modal.Footer>
+        </Modal> 
         </div>
     );
 }

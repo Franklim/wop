@@ -23,11 +23,22 @@ function Groups(){
 
     const [pages, setPages] = useState([])
     const [activePage, setActivePage] = useState(1)
-    
-    useEffect(()=>{
-        loadGroups();
-    }, [actualize])
 
+    useEffect(()=>{
+        
+        api.get('groups?page='+activePage).then(response =>{
+            setGroups(response.data.groups)
+            const total = response.headers['x-total-count'];
+            
+            let tempPages = []
+            for(let i = total; i > 0; i = i-5 ){
+                tempPages.push(<Pagination.Item key={tempPages.length} active={tempPages.length+1 == activePage}>{tempPages.length+1}</Pagination.Item>)
+            }
+            setPages(tempPages)
+            
+        })
+    }, [actualize])
+      
     function clearFields(){
         setName('');
     }    
@@ -50,24 +61,14 @@ function Groups(){
     function handleFilter(e) {
         const num = e.target.text
         if(num){
-            setActivePage(num)            
-            setActualize(!actualize);        
-        }        
-    };
-
-    async function loadGroups(){
-        const response = await api.get('groups');
-        setGroups(response.data.groups)
+            setActivePage(num)   
+            setActualize(!actualize);                             
+            
+        }   
         
-        let tempPages = []
-        for(let i = response.data.groups.length; i > 0; i = i-5 ){
-            tempPages.push(<Pagination.Item key={tempPages.length} active={tempPages.length+1 == activePage}>{tempPages.length+1}</Pagination.Item>)
-        }
-        setPages(tempPages)
-                
-    }
-
-    async function handleGroups(e){
+    };
+    
+    async function handleInsert(e){
         e.preventDefault();
         const data = {
             name
@@ -100,13 +101,13 @@ function Groups(){
         await api.delete('groups/'+tempId);
         setActualize(!actualize);
         setShowModalDelete(false);    
-    }    
+    }         
     
     return(
         <div>
             <Menu/>
             
-            <Form style={{margin:20, width:'25%'}} onSubmit={handleGroups}>
+            <Form style={{margin:20, width:'25%'}} onSubmit={handleInsert}>
                     <Form.Group style={{marginTop:20}}>
                         <Form.Label>Group Name</Form.Label>
                         <Form.Control required value={name} onChange={e=> setName(e.target.value)} placeholder="Insert the group name" />
@@ -132,7 +133,7 @@ function Groups(){
                 </thead>
  
                     <tbody>
-                        {groups.slice((activePage * 5) - 5, 5*activePage).map(group=> (
+                        {groups.map(group=> (
                             <tr key={group.id}>
                                 <th style={{width:'5%'}} id="id" scope="row">{group.id}</th>
                                 <td style={{width:'25%'}} id="name">{group.name}</td>
