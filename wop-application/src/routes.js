@@ -13,7 +13,7 @@ function Routes(){
                 <Route path="/" exact component= {Home} />
                 <Route path="/groups" component= {Groups} />
                 <Route path="/persons" component= {Persons} />
-                
+                <Route path="/users" component= {Users} />                
                 
             </Switch>
         </BrowserRouter>

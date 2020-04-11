@@ -227,7 +227,7 @@ function Persons(){
 
         <Pagination onClick={handleFilter} style={{marginBottom:0, marginLeft:'25%'}} size="sm" >
                 {pages}
-         </Pagination>
+        </Pagination>
 
         <Table style={{marginLeft:20, width:'50%'}}striped bordered hover size="sm">
         <thead>
