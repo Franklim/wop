@@ -6,7 +6,7 @@ import { FaHome } from "react-icons/fa";
 function Menu(){
     return(
         <Navbar bg="light" expand="lg">
-            <Navbar.Brand href="/"><FaHome/></Navbar.Brand>
+            <Navbar.Brand href="/home"><FaHome/></Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             
             <Navbar.Collapse id="basic-navbar-nav">
