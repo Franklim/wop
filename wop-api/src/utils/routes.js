@@ -4,6 +4,7 @@ const constants = require('./Constants')
 const GroupController = require('../controllers/GroupController')
 const PersonController = require('../controllers/PersonController')
 const UserController = require('../controllers/UserController')
+const AuthenthicationController = require('../controllers/AuthenthicationController')
 
 const routes = express.Router();
 
@@ -22,5 +23,6 @@ routes.put(constants.USER_PUT, UserController.update);
 routes.get(constants.USER_GET, UserController.paginatedList);
 routes.delete(constants.USER_DELETE, UserController.delete);
 
+routes.post(constants.AUTH_POST, AuthenthicationController.auth);
 
 module.exports = routes;

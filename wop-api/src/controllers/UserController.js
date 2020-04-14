@@ -1,15 +1,17 @@
 const connection = require('../database/connection')
 const constants = require("../utils/Constants")
+const bcrypt = require('bcryptjs');
 
 module.exports ={
     
        async create(request, response){
             const {login,password,active,groupId,personId} = request.body;
+            const hash = await bcrypt.hashSync(password, 10);           
 
             try {
                 const [id] = await connection(constants.TABLE_USERS).insert({
                     login,
-                    password,
+                    password:hash,
                     active,
                     groupId,
                     personId
@@ -26,6 +28,10 @@ module.exports ={
         async update(request, response){
             const {id} = request.params;
             const user = request.body
+
+            const hash = await bcrypt.hashSync(user.password, 10);        
+            user.password = hash;   
+            
             try {
                 await connection(constants.TABLE_USERS).where('id',id).update(user);    
                 return response.status(204).send();

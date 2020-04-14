@@ -21,4 +21,6 @@ module.exports = Object.freeze({
     USER_GET:      "/users",
     USER_DELETE:   "/users/:id",
 
+    AUTH_POST:      "/auth"
+
 });

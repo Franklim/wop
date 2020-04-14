@@ -1,33 +1,49 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState,useEffect } from 'react'
+import {useHistory} from 'react-router-dom';
 import {Container,Form,Col,Button,Image,InputGroup,Modal} from 'react-bootstrap'
 import Logo from '../../assets/logo.png'
 import {FaLock,FaUser} from 'react-icons/fa'
+import api from '../../services/api'
 
 function Login(){
 
-    const [user,setUser]=useState();
     const [login,setLogin]=useState("");
     const [password,setPassword]=useState("");
-
+    
     const [showModalLogin, setShowModalLogin] = useState(false);
 
-    useEffect(()=>{
-       
-    },[])
+    const history = useHistory()
 
+    useEffect(()=>{
+
+    },[])
+   
     async function handleAuth(e){
         e.preventDefault()
-                
-        try {
 
-            if(!user){
+        const data={
+            login,
+            password
+        }              
+        
+        try {
+            const response = await api.post('auth', data)
+            const user = response.data.user;
+            const token =response.data.token;                  
+            
+            if(user){             
+                sessionStorage.setItem('login',user.login)
+                history.push("/home")
                 
             }else{
+                
                 setShowModalLogin(true)
             }
-            clearFields()    
+            
             
         } catch (error) {
+            clearFields()    
+            setShowModalLogin(true)
             
         }
     }
