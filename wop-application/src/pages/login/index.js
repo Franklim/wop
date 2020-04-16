@@ -14,9 +14,9 @@ function Login(){
 
     const history = useHistory()
 
-    useEffect(()=>{
-
-    },[])
+    if(sessionStorage.getItem('login')){
+       history.push("/home")
+    }
    
     async function handleAuth(e){
         e.preventDefault()
