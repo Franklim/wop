@@ -1,10 +1,12 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {useHistory} from 'react-router-dom'
-import{Navbar,Nav,NavDropdown,Form, FormText, Button} from 'react-bootstrap'
+import{Navbar,Nav,NavDropdown,Form, FormText, Button, Modal} from 'react-bootstrap'
 import { FiPower} from "react-icons/fi";
-import { FaHome } from "react-icons/fa";
+import { FaHome,FaUser } from "react-icons/fa";
 
 function Menu(){
+
+    const [showModalLogOut, setShowModalLogOut] = useState(false);
 
     const login = sessionStorage.getItem('login')
     const history = useHistory()
@@ -13,7 +15,7 @@ function Menu(){
         sessionStorage.removeItem('login')
         history.push('/')
     }
-
+   
     return(
         <div>
             <Navbar bg="light" expand="lg">
@@ -33,11 +35,26 @@ function Menu(){
                     </NavDropdown>
                     </Nav>
                     <Form inline>
-                        <FormText> {login} </FormText>
-                        <Button onClick={handleLogOut} style={{marginLeft:15}} variant="outline-danger" size="sm"><FiPower/></Button>
+                        <FormText style={{fontSize:16}}> <FaUser/> {login} </FormText>
+                        <Button onClick={()=>setShowModalLogOut(true)} style={{marginLeft:15}} variant="outline-danger" size="sm"><FiPower/></Button>
                     </Form>
                 </Navbar.Collapse>
-            </Navbar>            
+            </Navbar>        
+
+            <Modal show={showModalLogOut} onHide={()=>setShowModalLogOut(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirm exit</Modal.Title>
+                </Modal.Header>
+                    <Modal.Body>Do you want to exit?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={handleLogOut}>
+                        Confirm
+                    </Button>
+                    <Button variant="secondary" onClick={()=>setShowModalLogOut(false)}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>    
         </div>
     );
 }
