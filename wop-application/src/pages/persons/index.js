@@ -3,7 +3,7 @@ import Menu from '../../components/menu'
 import {Col,Form, Button, Table,Pagination,Modal} from 'react-bootstrap'
 import {FiTrash2} from 'react-icons/fi'
 import api from '../../services/api'
-const constants = require('../../utils/StatesNames')
+const constants = require('../../utils/Constants')
 
 function Persons(){
 
@@ -14,7 +14,7 @@ function Persons(){
     const [number, setNumber] = useState("") 
     const [district, setDistrict] = useState("") 
     const [city, setCity] = useState("") 
-    const [state, setState] = useState([]) 
+    const [state, setState] = useState(constants.STATES[0]) 
     const [country, setCountry] = useState("") 
     const [zipcode, setZipcode] = useState("") 
     const [complement, setComplement] = useState("") 

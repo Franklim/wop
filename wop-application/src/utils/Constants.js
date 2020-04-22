@@ -30,6 +30,12 @@ module.exports = Object.freeze({
         "Tocantins",
         "Exterior",
         "Outro"
+        ],
+        
+        STATUS:[
+            "INACTIVE",
+            "ACTIVE",
+            "BLOCKED"
         ]
     
     

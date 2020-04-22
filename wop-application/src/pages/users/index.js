@@ -3,6 +3,7 @@ import Menu from '../../components/menu'
 import {Form,Col,Table,Pagination,Button,Modal} from 'react-bootstrap'
 import api from '../../services/api'
 import {FiTrash2} from 'react-icons/fi'
+const constants = require('../../utils/Constants')
 
 function Users(){
 
@@ -31,10 +32,12 @@ function Users(){
       
         api.get('groups').then(response=>{
             setGroups(response.data.groups)
+            setGroupName(response.data.groups[0].name)
         })
 
         api.get('persons').then(response=>{
             setPersons(response.data.persons)
+            setPersonName(response.data.persons[0].name)
         })
 
         api.get('users?page='+ activePage).then(response=>{
@@ -175,7 +178,7 @@ function Users(){
                         <th>Login</th>
                         <th>Group</th>
                         <th>Person</th>
-                        <th>Active</th>
+                        <th>Status</th>
                         <th>Actions</th>                        
                     </tr>
                 </thead>
@@ -186,7 +189,7 @@ function Users(){
                             <td>{user.login}</td>
                             <td>{user.groupName}</td>
                             <td>{user.personName}</td>
-                            <td>{user.active}</td>
+                            <td>{constants.STATUS[user.active]}</td>
                             <td><button className="btn btn-danger btn-sm" onClick={() => {prepareToDelete(user)} }> <FiTrash2/> </button></td>
                         </tr>
                         )

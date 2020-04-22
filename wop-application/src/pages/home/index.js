@@ -14,7 +14,12 @@ function Home(){
                     <DiReact size={30}/>
                     <DiBootstrap size={30}/>
                     <DiMysql size={30}/>
-                    <DiGithubBadge size={30}/>
+                    <a  style={{color:'inherit'}} 
+                        href="https://github.com/Franklim/wop" 
+                        target="_blank" 
+                        rel="noopener noreferrer" >
+                            <DiGithubBadge size={30}/>
+                    </a>
                 </Form>
             </Navbar>                       
         </div>
