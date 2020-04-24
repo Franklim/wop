@@ -128,7 +128,7 @@ function Groups(){
  
                     <tbody>
                         {groups.map(group=> (
-                            <tr onMouseUpCapture={()=>handleEditClick(group)} key={group.id}>
+                            <tr onDoubleClick={()=>handleEditClick(group)} key={group.id}>
                                 <th style={{width:'5%'}} id="id" scope="row">{group.id}</th>
                                 <td style={{width:'25%'}} id="name">{group.name}</td>
                                 <td id="permissions">{group.permissions}</td>

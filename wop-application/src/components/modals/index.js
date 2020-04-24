@@ -1,12 +1,12 @@
 import React,{useState} from 'react'
 import {Modal,Button} from 'react-bootstrap'
 
-export const ModalError = (props) => {
-    const {showModal, closeModalFunction, title, message} = props
+export const ModalInfo = (props) => {
+    const {show, closeModalFunction, title, message} = props
     
     return(
         <div>
-            <Modal show={showModal} onHide={()=>closeModalFunction()} >
+            <Modal show={show} onHide={()=>closeModalFunction()} >
                 <Modal.Header closeButton>
                     <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>

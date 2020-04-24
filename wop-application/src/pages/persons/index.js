@@ -244,7 +244,7 @@ function Persons(){
 
             <tbody>
                 {persons.map(person=> (
-                    <tr onMouseUpCapture={()=> handleEditClick(person)} key={person.id}>
+                    <tr onDoubleClick={()=> handleEditClick(person)} key={person.id}>
                         <th style={{width:'5%'}}  scope="row">{person.id}</th>
                         <td>{person.name}</td>
                         <td>{person.document}</td>

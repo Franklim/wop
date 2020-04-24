@@ -4,14 +4,14 @@ import {Container,Form,Col,Button,Image,InputGroup,Modal} from 'react-bootstrap'
 import Logo from '../../assets/logo.png'
 import {FaLock,FaUser} from 'react-icons/fa'
 import api from '../../services/api'
-import {ModalError} from '../../components/modals'
+import {ModalInfo} from '../../components/modals'
 
 function Login(){
 
     const [login,setLogin]=useState("");
     const [password,setPassword]=useState("");
     
-    const [showModalLogin, setShowModalLogin] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     
     const history = useHistory()
     
@@ -38,13 +38,13 @@ function Login(){
                 
             }else{
                 
-                setShowModalLogin(true)
+                setShowModal(true)
             }
             
             
         } catch (error) {
             clearFields()                
-            setShowModalLogin(true)
+            setShowModal(true)
             
         }
         
@@ -84,9 +84,9 @@ function Login(){
             </Form.Row>
                       
         </Form>
-        <ModalError 
-            showModal={showModalLogin} 
-            closeModalFunction={()=> setShowModalLogin(false)} 
+        <ModalInfo 
+            show={showModal} 
+            closeModalFunction={()=> setShowModal(false)} 
             title="Login info"
             message="Unauthorized to connect." />
         

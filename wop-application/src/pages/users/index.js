@@ -3,6 +3,7 @@ import Menu from '../../components/menu'
 import {Form,Col,Table,Pagination,Button,Modal} from 'react-bootstrap'
 import api from '../../services/api'
 import {FiTrash2} from 'react-icons/fi'
+import {ModalInfo} from '../../components/modals'
 const constants = require('../../utils/Constants')
 
 function Users(){
@@ -184,7 +185,7 @@ function Users(){
                 </thead>
                 <tbody>
                     {users.map(user=> (
-                        <tr onMouseUpCapture={()=> handleEditClick(user)} key={user.id}>
+                        <tr onDoubleClick={()=> handleEditClick(user)} key={user.id}>
                             <th style={{width:'5%'}}  scope="row">{user.id}</th>
                             <td>{user.login}</td>
                             <td>{user.groupName}</td>
@@ -210,19 +211,13 @@ function Users(){
                         Close
                     </Button>
                 </Modal.Footer>
-            </Modal>      
+            </Modal>                  
 
-            <Modal show={showModalInsert} onHide={()=>setShowModalInsert(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Insert User</Modal.Title>
-                </Modal.Header>
-                    <Modal.Body>User "{tempLogin}" inserted.</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={()=>setShowModalInsert(false)}>
-                        Ok
-                    </Button>
-                </Modal.Footer>
-            </Modal> 
+            <ModalInfo 
+            showModal={showModalInsert} 
+            closeModalFunction={()=> setShowModalInsert(false)} 
+            title="Insert User"
+            message={"User "+tempLogin+" inserted."} />
         </div>
     );
 }
