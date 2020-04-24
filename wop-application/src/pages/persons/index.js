@@ -3,6 +3,7 @@ import Menu from '../../components/menu'
 import {Col,Form, Button, Table,Pagination,Modal} from 'react-bootstrap'
 import {FiTrash2} from 'react-icons/fi'
 import api from '../../services/api'
+import {ModalInfo,ModalActionConfirmation} from '../../components/modals'
 const constants = require('../../utils/Constants')
 
 function Persons(){
@@ -257,34 +258,22 @@ function Persons(){
                 )}
             </tbody>
 
-        </Table>
-        
-        <Modal show={showModalDelete} onHide={()=>setShowModalDelete(false)}>
-            <Modal.Header closeButton>
-                <Modal.Title>Delete Person</Modal.Title>
-            </Modal.Header>
-                <Modal.Body>Confirm delete person "{tempName}"?</Modal.Body>
-            <Modal.Footer>
-                <Button variant="danger" onClick={handleDelete}>
-                    Delete
-                </Button>
-                <Button variant="secondary" onClick={()=>setShowModalDelete(false)}>
-                    Close
-                </Button>
-            </Modal.Footer>
-        </Modal>      
+        </Table>      
+     
+        <ModalActionConfirmation 
+            show={showModalDelete} 
+            closeModalFunction={()=> setShowModalDelete(false)} 
+            title="Delete Person"
+            message={"Confirm delete person '"+tempName+"'?"}
+            actionName="Delete"
+            actionFunction={handleDelete} />
 
-        <Modal show={showModalInsert} onHide={()=>setShowModalInsert(false)}>
-            <Modal.Header closeButton>
-                <Modal.Title>Insert Person</Modal.Title>
-            </Modal.Header>
-                <Modal.Body>Person "{tempName}" inserted.</Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={()=>setShowModalInsert(false)}>
-                    Ok
-                </Button>
-            </Modal.Footer>
-        </Modal> 
+        <ModalInfo 
+            show={showModalInsert} 
+            closeModalFunction={()=> setShowModalInsert(false)} 
+            title="Insert User"
+            message={"Person '"+tempName+"' inserted."} />
+
         </div>
     );
 }

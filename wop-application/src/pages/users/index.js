@@ -3,7 +3,7 @@ import Menu from '../../components/menu'
 import {Form,Col,Table,Pagination,Button,Modal} from 'react-bootstrap'
 import api from '../../services/api'
 import {FiTrash2} from 'react-icons/fi'
-import {ModalInfo} from '../../components/modals'
+import {ModalInfo,ModalActionConfirmation} from '../../components/modals'
 const constants = require('../../utils/Constants')
 
 function Users(){
@@ -196,25 +196,18 @@ function Users(){
                         )
                     )}
                 </tbody>
-            </Table>    
+            </Table>                  
 
-            <Modal show={showModalDelete} onHide={()=>setShowModalDelete(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Delete User</Modal.Title>
-                </Modal.Header>
-                    <Modal.Body>Confirm delete user "{tempLogin}"?</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={handleDelete}>
-                        Delete
-                    </Button>
-                    <Button variant="secondary" onClick={()=>setShowModalDelete(false)}>
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>                  
+            <ModalActionConfirmation 
+            show={showModalDelete} 
+            closeModalFunction={()=> setShowModalDelete(false)} 
+            title="Delete User"
+            message={"Confirm delete user '"+tempLogin+"'?"}
+            actionName="Delete"
+            actionFunction={handleDelete} />              
 
             <ModalInfo 
-            showModal={showModalInsert} 
+            show={showModalInsert} 
             closeModalFunction={()=> setShowModalInsert(false)} 
             title="Insert User"
             message={"User "+tempLogin+" inserted."} />

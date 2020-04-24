@@ -1,8 +1,9 @@
 import React, {useState,useEffect} from 'react'
 import Menu from  '../../components/menu'
-import {Form, Button, Table, Modal, Pagination} from 'react-bootstrap'
+import {Form, Button, Table, Pagination} from 'react-bootstrap'
 import api from '../../services/api'
 import { FiTrash2 } from "react-icons/fi";
+import {ModalInfo, ModalActionConfirmation} from '../../components/modals'
 
 function Groups(){
 
@@ -48,6 +49,7 @@ function Groups(){
         setTempId(group.id)
         setTempName(group.name)        
         setShowModalDelete(true);           
+
     };
 
     function handleFilter(e) {
@@ -140,34 +142,21 @@ function Groups(){
                         )}
                     </tbody>
                 
-            </Table>
+            </Table>                     
                         
-            <Modal show={showModalDelete} onHide={()=>setShowModalDelete(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Delete Group</Modal.Title>
-                </Modal.Header>
-                    <Modal.Body>Confirm delete group "{tempName}"?</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={handleDelete}>
-                        Delete
-                    </Button>
-                    <Button variant="secondary" onClick={()=>setShowModalDelete(false)}>
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>      
+            <ModalActionConfirmation 
+            show={showModalDelete} 
+            closeModalFunction={()=> setShowModalDelete(false)} 
+            title="Delete Group"
+            message={"Confirm delete group '"+tempName+"'?"}
+            actionName="Delete"
+            actionFunction={handleDelete} />                      
 
-            <Modal show={showModalInsert} onHide={()=>setShowModalInsert(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Insert Group</Modal.Title>
-                </Modal.Header>
-                    <Modal.Body>Group "{tempName}" inserted.</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={()=>setShowModalInsert(false)}>
-                        Ok
-                    </Button>
-                </Modal.Footer>
-            </Modal>            
+            <ModalInfo 
+            show={showModalInsert} 
+            closeModalFunction={()=> setShowModalInsert(false)} 
+            title="Insert User"
+            message={"Group '"+tempName+"' inserted."} />                      
                                            
         </div>
     );        
