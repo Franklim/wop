@@ -4,6 +4,7 @@ import {Container,Form,Col,Button,Image,InputGroup,Modal} from 'react-bootstrap'
 import Logo from '../../assets/logo.png'
 import {FaLock,FaUser} from 'react-icons/fa'
 import api from '../../services/api'
+import {ModalError} from '../../components/modals'
 
 function Login(){
 
@@ -11,9 +12,9 @@ function Login(){
     const [password,setPassword]=useState("");
     
     const [showModalLogin, setShowModalLogin] = useState(false);
-
+    
     const history = useHistory()
-
+    
     if(sessionStorage.getItem('login')){
        history.push("/home")
     }
@@ -42,10 +43,11 @@ function Login(){
             
             
         } catch (error) {
-            clearFields()    
+            clearFields()                
             setShowModalLogin(true)
             
         }
+        
     }
 
     function clearFields(){
@@ -55,7 +57,7 @@ function Login(){
 
     return(        
     <Container>
-        <Form onSubmit={handleAuth} className="border border-info" >
+        <Form onSubmit={e=>handleAuth(e)} className="border border-info" >
             <Form.Row style={{display:'flex',justifyContent:"center", alignItems:"center",height: '100vh'}}>
                 <Form.Group as={Col} md="3">
                     <Form.Label style={{display:'flex',justifyContent:"center"}}>SIGN IN</Form.Label>
@@ -80,18 +82,15 @@ function Login(){
                     <Image style={{width:"50%"}} src={Logo} rounded />
                 </Form.Group>
             </Form.Row>
+                      
         </Form>
-        <Modal show={showModalLogin} onHide={()=>setShowModalLogin(false)}>
-            <Modal.Header closeButton>
-                <Modal.Title>Login info</Modal.Title>
-            </Modal.Header>
-                <Modal.Body>Unauthorized to connect.</Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={()=>setShowModalLogin(false)}>
-                    Ok
-                </Button>
-            </Modal.Footer>
-        </Modal> 
+        <ModalError 
+            showModal={showModalLogin} 
+            closeModalFunction={()=> setShowModalLogin(false)} 
+            title="Login info"
+            message="Unauthorized to connect." />
+        
+        )        
     </Container> 
     );
 }
