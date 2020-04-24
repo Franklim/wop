@@ -51,6 +51,7 @@ module.exports ={
                 .select([
                     constants.TABLE_USERS+'.id',
                     constants.TABLE_USERS+'.login',
+					constants.TABLE_USERS+'.password',
                     constants.TABLE_USERS+'.active',
                     constants.TABLE_GROUPS+'.name as groupName',
                     constants.TABLE_PERSONS+'.name as personName',  
@@ -80,6 +81,7 @@ module.exports ={
                 .select([
                     constants.TABLE_USERS+'.id',
                     constants.TABLE_USERS+'.login',
+					constants.TABLE_USERS+'.password',
                     constants.TABLE_USERS+'.active',
                     constants.TABLE_GROUPS+'.name as groupName',
                     constants.TABLE_PERSONS+'.name as personName',  
