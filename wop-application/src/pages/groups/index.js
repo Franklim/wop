@@ -4,6 +4,7 @@ import {Form, Button, Table, Pagination} from 'react-bootstrap'
 import api from '../../services/api'
 import { FiTrash2 } from "react-icons/fi";
 import {ModalInfo, ModalActionConfirmation} from '../../components/modals'
+import {TableList} from '../../components/table'
 
 function Groups(){
 
@@ -118,31 +119,8 @@ function Groups(){
             <Pagination onClick={handleFilter} style={{marginBottom:0, marginLeft:'25%'}} size="sm" >
                 {pages}
             </Pagination>
-            <Table style={{marginLeft:20, width:'50%'}}  striped bordered hover size="sm">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Group</th>
-                        <th>Permission</th>
-                        <th>Actions</th>                        
-                    </tr>
-                </thead>
- 
-                    <tbody>
-                        {groups.map(group=> (
-                            <tr onDoubleClick={()=>handleEditClick(group)} key={group.id}>
-                                <th style={{width:'5%'}} id="id" scope="row">{group.id}</th>
-                                <td style={{width:'25%'}} id="name">{group.name}</td>
-                                <td id="permissions">{group.permissions}</td>
-                                <td style={{width:'15%'}}>
-                                    <button className="btn btn-danger btn-sm" onClick={() => {prepareToDelete(group)} }> <FiTrash2/> </button>
-                                </td>
-                            </tr>
-                            )
-                        )}
-                    </tbody>
-                
-            </Table>                     
+
+            <TableList listItens ={groups} columnsNames={["id","group","permission"]} columnValues={["id","name","permissions"]}/>                               
                         
             <ModalActionConfirmation 
             show={showModalDelete} 

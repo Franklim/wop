@@ -88,9 +88,8 @@ function Login(){
             show={showModal} 
             closeModalFunction={()=> setShowModal(false)} 
             title="Login info"
-            message="Unauthorized to connect." />
-        
-        )        
+            message="Unauthorized to connect." />        
+                
     </Container> 
     );
 }
