@@ -3,7 +3,7 @@ const constants = require("../../utils/Constants")
 exports.up = function(knex) {
     return knex.schema.createTable(constants.TABLE_GROUPS,function(table){
         table.increments();
-        table.string('name').notNullable();
+        table.string('name').unique().notNullable();
         table.string('permissions');        
     })
 };

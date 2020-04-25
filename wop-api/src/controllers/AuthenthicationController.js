@@ -9,7 +9,6 @@ module.exports ={
     async auth(request, response){
 
         const {login,password} = request.body;
-
         const user = await connection(constants.TABLE_USERS).where('login',login).first()  
 
         if(!user){
@@ -17,9 +16,7 @@ module.exports ={
         }
 
         if(await bcrypt.compare(password, user.password)){
-
             user.password = undefined;
-
             const token = jwt.sign({ id: user.id}, authConfig.secret, {
                 expiresIn:86400
             })
@@ -28,8 +25,5 @@ module.exports ={
         }else{
             return response.status(400).send({error: 'Invalid password'})
         }
-
-
-
     }
 }
