@@ -1,4 +1,4 @@
-import React, {useState,useEffect } from 'react'
+import React, {useState} from 'react'
 import {useHistory} from 'react-router-dom';
 import {Container,Form,Col,Button,Image,InputGroup,Modal} from 'react-bootstrap'
 import Logo from '../../assets/logo.png'
@@ -34,18 +34,14 @@ function Login(){
             
             if(user){             
                 sessionStorage.setItem('login',user.login)
-                history.push("/home")
-                
-            }else{
-                
+                history.push("/home")                
+            }else{                
                 setShowModal(true)
-            }
-            
+            }            
             
         } catch (error) {
             clearFields()                
-            setShowModal(true)
-            
+            setShowModal(true)            
         }
         
     }
@@ -81,14 +77,15 @@ function Login(){
                 <Form.Group style={{display:'flex',justifyContent:"center"}} as={Col} md="3">
                     <Image style={{width:"50%"}} src={Logo} rounded />
                 </Form.Group>
-            </Form.Row>
-                      
+            </Form.Row>                      
         </Form>
+
         <ModalInfo 
             show={showModal} 
             closeModalFunction={()=> setShowModal(false)} 
             title="Login info"
-            message="Unauthorized to connect." />        
+            message="Unauthorized to connect." 
+        />        
                 
     </Container> 
     );

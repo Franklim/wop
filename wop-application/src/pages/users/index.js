@@ -1,12 +1,13 @@
 import React,{useState,useEffect} from 'react'
 import Menu from '../../components/menu'
-import {Form,Col,Table,Pagination,Button,Modal} from 'react-bootstrap'
+import {Form,Col,Pagination,Button} from 'react-bootstrap'
 import api from '../../services/api'
-import {FiTrash2} from 'react-icons/fi'
 import {ModalInfo,ModalActionConfirmation} from '../../components/modals'
-const constants = require('../../utils/Constants')
+import {TableList} from '../../components/table'
 
 function Users(){
+    const columnsNames = ["Id","Login","Group","Person","Active","Remove"];
+    const columnValues = ["id","login","groupName","personName","active"];
 
     const [persons,setPersons]=useState([])
     const [groups,setGroups]=useState([])
@@ -24,6 +25,8 @@ function Users(){
 
     const [showModalInsert, setShowModalInsert] = useState(false);
     const [showModalDelete, setShowModalDelete] = useState(false);
+    const [showModalError, setShowModalError] = useState(false);
+    const [msgError, setMsgError] = useState("")
 
     const [activePage,setActivePage] = useState(1)
     const [pages,setPages] = useState([])
@@ -82,7 +85,8 @@ function Users(){
             setActualize(!actualize);
 
         } catch (error) {
-            alert("Cannot insert new user. Error:" + error)
+            setMsgError("Cannot insert new user. " + error)
+            setShowModalError(true)           
         }
     }
 
@@ -94,7 +98,8 @@ function Users(){
             setActualize(!actualize);
             setShowModalDelete(false);  
         } catch (error) {
-            
+            setMsgError("Cannot delete user. " + error)
+            setShowModalError(true)
         }
     }
 
@@ -105,7 +110,6 @@ function Users(){
         setActive(user.active)
         setPersonName(user.personName)
         setGroupName(user.groupName)
-
     }
 
     function handleFilter(e){
@@ -172,45 +176,36 @@ function Users(){
                 {pages}
             </Pagination>
 
-            <Table style={{marginLeft:20, width:'50%'}}striped bordered hover size="sm">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Login</th>
-                        <th>Group</th>
-                        <th>Person</th>
-                        <th>Status</th>
-                        <th>Actions</th>                        
-                    </tr>
-                </thead>
-                <tbody>
-                    {users.map(user=> (
-                        <tr onDoubleClick={()=> handleEditClick(user)} key={user.id}>
-                            <th style={{width:'5%'}}  scope="row">{user.id}</th>
-                            <td>{user.login}</td>
-                            <td>{user.groupName}</td>
-                            <td>{user.personName}</td>
-                            <td>{constants.STATUS[user.active]}</td>
-                            <td><button className="btn btn-danger btn-sm" onClick={() => {prepareToDelete(user)} }> <FiTrash2/> </button></td>
-                        </tr>
-                        )
-                    )}
-                </tbody>
-            </Table>                  
+            <TableList 
+                listItens ={users} 
+                columnsNames={columnsNames} 
+                columnValues={columnValues}            
+                updateFunction={handleEditClick}
+                deleteFunction={prepareToDelete}
+            />                
 
             <ModalActionConfirmation 
-            show={showModalDelete} 
-            closeModalFunction={()=> setShowModalDelete(false)} 
-            title="Delete User"
-            message={"Confirm delete user '"+tempLogin+"'?"}
-            actionName="Delete"
-            actionFunction={handleDelete} />              
+                show={showModalDelete} 
+                closeModalFunction={()=> setShowModalDelete(false)} 
+                title="Delete User"
+                message={"Confirm delete user '"+tempLogin+"'?"}
+                actionName="Delete"
+                actionFunction={handleDelete} 
+            />
 
             <ModalInfo 
-            show={showModalInsert} 
-            closeModalFunction={()=> setShowModalInsert(false)} 
-            title="Insert User"
-            message={"User "+tempLogin+" inserted."} />
+                show={showModalInsert} 
+                closeModalFunction={()=> setShowModalInsert(false)} 
+                title="Insert User"
+                message={"User "+tempLogin+" inserted."} 
+            />
+
+            <ModalInfo 
+                show={showModalError} 
+                closeModalFunction={()=> setShowModalError(false)} 
+                title="Error!"
+                message={msgError} 
+            />
         </div>
     );
 }

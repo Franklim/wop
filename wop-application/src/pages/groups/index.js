@@ -2,11 +2,13 @@ import React, {useState,useEffect} from 'react'
 import Menu from  '../../components/menu'
 import {Form, Button, Table, Pagination} from 'react-bootstrap'
 import api from '../../services/api'
-import { FiTrash2 } from "react-icons/fi";
 import {ModalInfo, ModalActionConfirmation} from '../../components/modals'
 import {TableList} from '../../components/table'
 
 function Groups(){
+
+    const columnsNames = ["Id","Group","Permissions","Remove"];
+    const columnValues = ["id","name","permissions"];
 
     const [groups, setGroups] = useState([]);
     
@@ -21,6 +23,8 @@ function Groups(){
 
     const [showModalInsert, setShowModalInsert] = useState(false);
     const [showModalDelete, setShowModalDelete] = useState(false);
+    const [showModalError, setShowModalError] = useState(false);
+    const [msgError, setMsgError] = useState("")
 
     const [pages, setPages] = useState([])
     const [activePage, setActivePage] = useState(1)
@@ -49,18 +53,15 @@ function Groups(){
     function prepareToDelete(group){
         setTempId(group.id)
         setTempName(group.name)        
-        setShowModalDelete(true);           
-
+        setShowModalDelete(true)       
     };
 
     function handleFilter(e) {
         const num = e.target.text
         if(num){
             setActivePage(num)   
-            setActualize(!actualize);                             
-            
-        }   
-        
+            setActualize(!actualize);                    
+        }           
     };
     
     async function handleInsert(e){
@@ -77,10 +78,10 @@ function Groups(){
             setTempName(data.name)
             setShowModalInsert(true);
             clearFields();
-            setActualize(!actualize);
-            
+            setActualize(!actualize);            
         } catch (error) {
-            alert("Cannot insert a new group. Error:" + error)    
+            setMsgError("Cannot insert new group. " + error)
+            setShowModalError(true)
         }
     }
     function handleEditClick(group){
@@ -96,7 +97,8 @@ function Groups(){
             clearFields()
             setShowModalDelete(false);
         } catch (error) {
-            alert("Cannot delete group. Error " + error)
+            setMsgError("Cannot delete group. " + error)
+            setShowModalError(true)
         }
     }         
     
@@ -120,22 +122,36 @@ function Groups(){
                 {pages}
             </Pagination>
 
-            <TableList listItens ={groups} columnsNames={["id","group","permission"]} columnValues={["id","name","permissions"]}/>                               
+            <TableList 
+                listItens ={groups} 
+                columnsNames={columnsNames} 
+                columnValues={columnValues}            
+                updateFunction={handleEditClick}
+                deleteFunction={prepareToDelete}
+            />                            
                         
             <ModalActionConfirmation 
-            show={showModalDelete} 
-            closeModalFunction={()=> setShowModalDelete(false)} 
-            title="Delete Group"
-            message={"Confirm delete group '"+tempName+"'?"}
-            actionName="Delete"
-            actionFunction={handleDelete} />                      
+                show={showModalDelete} 
+                closeModalFunction={()=> setShowModalDelete(false)} 
+                title="Delete Group"
+                message={"Confirm delete group '"+tempName+"'?"}
+                actionName="Delete"
+                actionFunction={handleDelete} 
+            />                      
 
             <ModalInfo 
-            show={showModalInsert} 
-            closeModalFunction={()=> setShowModalInsert(false)} 
-            title="Insert User"
-            message={"Group '"+tempName+"' inserted."} />                      
-                                           
+                show={showModalInsert} 
+                closeModalFunction={()=> setShowModalInsert(false)} 
+                title="Insert User"
+                message={"Group '"+tempName+"' inserted."} 
+            />
+
+            <ModalInfo 
+                show={showModalError} 
+                closeModalFunction={()=> setShowModalError(false)} 
+                title="Error!"
+                message={msgError} 
+            />                                           
         </div>
     );        
 }

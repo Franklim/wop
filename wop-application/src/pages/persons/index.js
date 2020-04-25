@@ -1,12 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import Menu from '../../components/menu'
 import {Col,Form, Button, Table,Pagination,Modal} from 'react-bootstrap'
-import {FiTrash2} from 'react-icons/fi'
 import api from '../../services/api'
 import {ModalInfo,ModalActionConfirmation} from '../../components/modals'
+import {TableList} from '../../components/table'
 const constants = require('../../utils/Constants')
 
 function Persons(){
+
+    const columnsNames = ["Id","Name","Whastsapp","Mail","Remove"];
+    const columnValues = ["id","name","whatsapp","mail"];
 
     const [id,setId]=useState(0)
     const [name, setName] = useState("") 
@@ -30,6 +33,8 @@ function Persons(){
 
     const [showModalInsert, setShowModalInsert] = useState(false);
     const [showModalDelete, setShowModalDelete] = useState(false);
+    const [showModalError, setShowModalError] = useState(false);
+    const [msgError, setMsgError] = useState("")
 
     const [activePage,setActivePage] = useState(1)
     const [pages,setPages] = useState([])
@@ -97,7 +102,8 @@ function Persons(){
             clearFields();
             setActualize(!actualize);
         } catch (error) {
-            alert("Cannot insert a new person. Error:" + error)       
+            setMsgError("Cannot insert new person. " + error)
+            setShowModalError(true)
         }        
         
     }
@@ -110,7 +116,8 @@ function Persons(){
             setActualize(!actualize);
             setShowModalDelete(false);       
         } catch (error) {
-            alert("Cannot delete te person. Error: "+error)
+            setMsgError("Cannot delete person. " + error)
+            setShowModalError(true)
         }        
     }
     
@@ -119,7 +126,6 @@ function Persons(){
         setTempName(person.name)
         setShowModalDelete(true);           
     };
-
 
     function handleFilter(e) {
         const num = e.target.text
@@ -147,7 +153,6 @@ function Persons(){
         setCountry(person.country)
         
     }
-
     
     return(
         <div>
@@ -228,37 +233,15 @@ function Persons(){
 
         <Pagination onClick={handleFilter} style={{marginBottom:0, marginLeft:'25%'}} size="sm" >
                 {pages}
-        </Pagination>
+        </Pagination>       
 
-        <Table style={{marginLeft:20, width:'50%'}}striped bordered hover size="sm">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Document</th>
-                <th>E-mail</th>
-                <th>City</th>
-                <th>Whatsapp</th>               
-                <th>Actions</th>                        
-            </tr>
-        </thead>
-
-            <tbody>
-                {persons.map(person=> (
-                    <tr onDoubleClick={()=> handleEditClick(person)} key={person.id}>
-                        <th style={{width:'5%'}}  scope="row">{person.id}</th>
-                        <td>{person.name}</td>
-                        <td>{person.document}</td>
-                        <td>{person.mail}</td>
-                        <td>{person.city}</td>
-                        <td>{person.whatsapp}</td>                        
-                        <td><button className="btn btn-danger btn-sm" onClick={() => {prepareToDelete(person)} }> <FiTrash2/> </button></td>
-                    </tr>
-                    )
-                )}
-            </tbody>
-
-        </Table>      
+        <TableList 
+            listItens ={persons} 
+            columnsNames={columnsNames} 
+            columnValues={columnValues}            
+            updateFunction={handleEditClick}
+            deleteFunction={prepareToDelete}
+        />        
      
         <ModalActionConfirmation 
             show={showModalDelete} 
@@ -266,13 +249,22 @@ function Persons(){
             title="Delete Person"
             message={"Confirm delete person '"+tempName+"'?"}
             actionName="Delete"
-            actionFunction={handleDelete} />
+            actionFunction={handleDelete} 
+        />
 
         <ModalInfo 
             show={showModalInsert} 
             closeModalFunction={()=> setShowModalInsert(false)} 
             title="Insert User"
-            message={"Person '"+tempName+"' inserted."} />
+            message={"Person '"+tempName+"' inserted."} 
+        />
+
+        <ModalInfo 
+            show={showModalError} 
+            closeModalFunction={()=> setShowModalError(false)} 
+            title="Error!"
+            message={msgError} 
+        />
 
         </div>
     );
