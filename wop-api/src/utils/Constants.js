@@ -28,10 +28,10 @@ module.exports = Object.freeze({
     CONDITION_GET:      "/conditions",
     CONDITION_DELETE:   "/conditions/:id",
 
-    PRODUCT_POST:     "products",
-    PRODUCT_PUT:      "products/:id",
-    PRODUCT_GET:      "products",
-    PRODUCT_DELETE:   "products/:id",
+    PRODUCT_POST:     "/products",
+    PRODUCT_PUT:      "/products/:id",
+    PRODUCT_GET:      "/products",
+    PRODUCT_DELETE:   "/products/:id",
 
     AUTH_POST:      "/auth"
 
