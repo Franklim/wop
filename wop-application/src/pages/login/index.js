@@ -72,7 +72,7 @@ function Login(){
                         <Form.Control value={password} onChange={e=>setPassword(e.target.value)} type="password" required aria-describedby="password" placeholder="Password"/>                               
                     </InputGroup>                           
                     
-                    <Button style={{width:"100%", marginTop:5}}  variant="primary" type="submit">Submit</Button>
+                    <Button style={{width:"100%", marginTop:5}}  variant="info" type="submit">Submit</Button>
                 </Form.Group>
                 <Form.Group style={{display:'flex',justifyContent:"center"}} as={Col} md="3">
                     <Image style={{width:"50%"}} src={Logo} rounded />

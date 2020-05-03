@@ -18,25 +18,32 @@ function Menu(){
    
     return(
         <div>
-            <Navbar bg="light" expand="lg">
+            <Navbar bg="info"  expand="lg">
                 <Navbar.Brand href="/home"><FaHome/></Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
-                    <NavDropdown title="REGISTER" id="basic-nav-dropdown">
-                        <NavDropdown.Item href="/groups"> Groups </NavDropdown.Item>
-                        <NavDropdown.Item href="/persons">Persons</NavDropdown.Item>
-                        <NavDropdown.Item href="/users">Users</NavDropdown.Item>
-                    </NavDropdown>
-                    <NavDropdown title="OPERATION" id="basic-nav-dropdown">
-                        <NavDropdown.Item href="#">New</NavDropdown.Item>
-                        <NavDropdown.Item href="#">Load</NavDropdown.Item>
-                    </NavDropdown>
+                        <NavDropdown title="REGISTERS" id="basic-nav-dropdown">
+                            <NavDropdown.Item href="/groups"> Groups </NavDropdown.Item>
+                            <NavDropdown.Item href="/persons">Persons</NavDropdown.Item>
+                            <NavDropdown.Item href="/users">Users</NavDropdown.Item>
+                            <NavDropdown.Item href="/products">Products</NavDropdown.Item>
+                            <NavDropdown.Item href="/conditions">Payment Conditions</NavDropdown.Item>
+                        </NavDropdown>
+                        <NavDropdown title="BUY" id="basic-nav-dropdown">
+                            <NavDropdown.Item href="#"> New </NavDropdown.Item>
+                            <NavDropdown.Item href="#"> Load </NavDropdown.Item>
+                        </NavDropdown>
+                        <NavDropdown title="SELL" id="basic-nav-dropdown">
+                            <NavDropdown.Item href="#">New</NavDropdown.Item>
+                            <NavDropdown.Item href="#">Load</NavDropdown.Item>
+                        </NavDropdown>
+                        <Nav.Link href="/home">REPORTS</Nav.Link>
                     </Nav>
                     <Form inline>
                         <FormText style={{fontSize:16}}> <FaUser/> {login} </FormText>
-                        <Button onClick={()=>setShowModalLogOut(true)} style={{marginLeft:15}} variant="outline-danger" size="sm"><FiPower/></Button>
+                        <Button onClick={()=>setShowModalLogOut(true)} style={{marginLeft:15}} variant="danger" size="sm"><FiPower/></Button>
                     </Form>
                 </Navbar.Collapse>
             </Navbar>        
